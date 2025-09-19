@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Leitura</title>
+    <!-- Adiciona o Tailwind CSS para estilização e a fonte Inter -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen items-center justify-center p-4">
+    <div id="app" class="bg-white shadow-xl rounded-2xl p-6 w-full max-w-2xl text-center flex flex-col items-center">
+        <!-- O conteúdo da aplicação será renderizado aqui pelo JavaScript -->
+    </div>
+
+    <script>
+        // Dados de exemplo: Leituras e suas atividades de interpretação
+        const leituras = [
+            {
+                id: 'leitura1',
+                titulo: 'A Raposa e as Uvas',
+                genero: 'Fábula',
+                texto: 'Certa raposa, morrendo de fome, viu num alto galho da parreira uns cachos de uvas, maduros e cheios de sumo. Sentindo a água na boca, e como se pudesse tocá-las, a raposa ficou excitada. Pulou, pulou e tentou alcançar as uvas, mas em vão. Elas estavam muito altas. Por fim, desiludida, a raposa afastou-se, murmurando para si mesma: "Estão verdes. Não valem o esforço!"',
+                perguntas: [
+                    {
+                        pergunta: 'Por que a raposa desistiu das uvas?',
+                        opcoes: ['Porque elas estavam estragadas.', 'Porque elas estavam muito altas.', 'Porque ela não queria mais uvas.'],
+                        respostaCorretaIndex: 1
+                    },
+                    {
+                        pergunta: 'No final da história, a raposa diz que as uvas estão "verdes" para:',
+                        opcoes: ['descrever a cor das uvas.', 'mostrar sua frustração e desilusão.', 'avisar outras raposas sobre as uvas.'],
+                        respostaCorretaIndex: 1
+                    }
+                ]
+            },
+            {
+                id: 'leitura2',
+                titulo: 'O Leão e o Rato',
+                genero: 'Fábula',
+                texto: 'Um leão, cansado de tanto caçar, dormia a sono solto debaixo da sombra de uma árvore. Vários ratinhos da redondeza, aproveitando a ocasião, puseram-se a brincar e a pular sobre o corpo do animal. Ao acordar, o leão segurou um dos ratos, pronto para esmagá-lo. O ratinho implorou por sua vida: "Por favor, solte-me! Se um dia precisar de ajuda, certamente farei o mesmo por ti!" O leão achou a ideia tão absurda que caiu na risada. Mesmo assim, soltou o rato. Algum tempo depois, o leão caiu em uma armadilha. Vendo o leão preso, o rato chamou os seus amigos e, roendo as cordas, libertou o rei da selva.',
+                perguntas: [
+                    {
+                        pergunta: 'Como o leão se sentia no início da história?',
+                        opcoes: ['Feliz', 'Cansado', 'Com medo'],
+                        respostaCorretaIndex: 1
+                    },
+                    {
+                        pergunta: 'O que a história ensina sobre amizade e gratidão?',
+                        opcoes: ['Somente os mais fortes podem ajudar.', 'A gratidão pode vir de onde menos se espera.', 'Amigos são apenas para diversão.'],
+                        respostaCorretaIndex: 1
+                    }
+                ]
+            },
+            {
+                id: 'leitura3',
+                titulo: 'A Horta Comunitária do Bairro Esperança',
+                genero: 'Notícia',
+                texto: 'O projeto "Verde Bairro", iniciativa de moradores do bairro Esperança, completa um ano e celebra seus resultados. Desde o seu início, a horta comunitária instalada em um terreno abandonado já produziu mais de 500 kg de alimentos orgânicos, distribuídos gratuitamente entre as famílias locais. A ação não apenas oferece comida saudável, mas também promove a união dos vizinhos, que se reúnem semanalmente para cuidar da plantação. Segundo Maria Clara, uma das idealizadoras do projeto, "o mais bonito é ver como a horta virou ponto de encontro e fortaleceu a amizade entre todos."',
+                perguntas: [
+                    {
+                        pergunta: 'De acordo com o texto, qual é o nome do projeto dos moradores?',
+                        opcoes: ['Horta Solidária', 'Verde Esperança', 'Verde Bairro'],
+                        respostaCorretaIndex: 2
+                    },
+                    {
+                        pergunta: 'A principal finalidade do texto é:',
+                        opcoes: ['ensinar a plantar uma horta.', 'convencer as pessoas a participarem do projeto.', 'informar sobre um projeto comunitário.'],
+                        respostaCorretaIndex: 2
+                    }
+                ]
+            },
+            {
+                id: 'leitura4',
+                titulo: 'A Flor e o Vento',
+                genero: 'Poema',
+                texto: 'Há uma flor na janela, / A flor de cor lilás. / Gira ao sabor da brisa, / Dança sem ir para trás. / O vento, amigo invisível, / Faz um carinho de leve. / A flor, contente, sorri, / Numa dança que se move.',
+                perguntas: [
+                    {
+                        pergunta: 'A "dança" da flor é causada por qual elemento da natureza?',
+                        opcoes: ['A brisa.', 'A janela.', 'A cor lilás.'],
+                        respostaCorretaIndex: 0
+                    },
+                    {
+                        pergunta: 'Qual a intenção do autor ao se referir ao vento como "amigo invisível"?',
+                        opcoes: ['Explicar que o vento não existe de verdade.', 'Dar uma característica humana (carinho) ao vento.', 'Dizer que a flor não consegue ver o vento.'],
+                        respostaCorretaIndex: 1
+                    }
+                ]
+            }
+        ];
+
+        let currentPage = 'home';
+        let currentReadingIndex = 0;
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const appDiv = document.getElementById('app');
+
+        // Função para renderizar a página inicial
+        function renderHomePage() {
+            appDiv.innerHTML = `
+                <h1 class="text-3xl font-bold mb-6 text-gray-800">Bem-vindo(a) à Plataforma de Leitura!</h1>
+                <p class="text-lg text-gray-600 mb-8">Escolha uma leitura para começar:</p>
+                <div class="space-y-4 w-full">
+                    ${leituras.map((leitura, index) => `
+                        <button onclick="iniciarLeitura(${index})" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-6 rounded-xl shadow-lg transition-transform duration-300 transform hover:scale-105">
+                            ${leitura.titulo} <span class="block text-sm opacity-80 mt-1">(${leitura.genero})</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Função para iniciar uma leitura específica
+        function iniciarLeitura(index) {
+            currentReadingIndex = index;
+            currentPage = 'reading';
+            renderReadingPage();
+        }
+
+        // Função para renderizar a página da leitura
+        function renderReadingPage() {
+            const leitura = leituras[currentReadingIndex];
+            appDiv.innerHTML = `
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">${leitura.titulo}</h2>
+                <p class="text-gray-700 text-left leading-relaxed mb-8">${leitura.texto}</p>
+                <button onclick="iniciarPerguntas()" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-transform duration-300 transform hover:scale-105">
+                    Começar Atividade
+                </button>
+            `;
+        }
+
+        // Função para iniciar as perguntas
+        function iniciarPerguntas() {
+            currentQuestionIndex = 0;
+            score = 0;
+            currentPage = 'questions';
+            renderQuestionsPage();
+        }
+
+        // Função para renderizar a página de perguntas
+        function renderQuestionsPage() {
+            const leitura = leituras[currentReadingIndex];
+            if (currentQuestionIndex >= leitura.perguntas.length) {
+                currentPage = 'results';
+                renderResultsPage();
+                return;
+            }
+
+            const pergunta = leitura.perguntas[currentQuestionIndex];
+            appDiv.innerHTML = `
+                <h2 class="text-xl font-semibold mb-6 text-gray-800">Questão ${currentQuestionIndex + 1} de ${leitura.perguntas.length}</h2>
+                <p class="text-gray-700 mb-6 text-lg">${pergunta.pergunta}</p>
+                <div class="space-y-4 w-full">
+                    ${pergunta.opcoes.map((opcao, index) => `
+                        <button onclick="responder(${index})" class="opcao-btn w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-xl transition-colors duration-200">
+                            ${opcao}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Função para responder a uma pergunta
+        function responder(respostaIndex) {
+            const leitura = leituras[currentReadingIndex];
+            const pergunta = leitura.perguntas[currentQuestionIndex];
+            const botoes = document.querySelectorAll('.opcao-btn');
+
+            botoes.forEach(btn => btn.disabled = true); // Desabilita os botões após a resposta
+
+            if (respostaIndex === pergunta.respostaCorretaIndex) {
+                score++;
+                botoes[respostaIndex].classList.remove('bg-gray-200', 'hover:bg-gray-300');
+                botoes[respostaIndex].classList.add('bg-green-500', 'text-white');
+            } else {
+                botoes[respostaIndex].classList.remove('bg-gray-200', 'hover:bg-gray-300');
+                botoes[respostaIndex].classList.add('bg-red-500', 'text-white');
+                botoes[pergunta.respostaCorretaIndex].classList.remove('bg-gray-200', 'hover:bg-gray-300');
+                botoes[pergunta.respostaCorretaIndex].classList.add('bg-green-500', 'text-white');
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                renderQuestionsPage();
+            }, 1500); // Espera 1.5 segundos antes de passar para a próxima pergunta
+        }
+
+        // Função para renderizar a página de resultados
+        function renderResultsPage() {
+            const leitura = leituras[currentReadingIndex];
+            const totalPerguntas = leitura.perguntas.length;
+            const mensagem = score === totalPerguntas ? 'Parabéns! Você acertou todas as questões!' : 'Continue praticando!';
+
+            appDiv.innerHTML = `
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Resultados</h2>
+                <p class="text-gray-700 text-xl mb-4">Sua pontuação: <span class="font-bold">${score} de ${totalPerguntas}</span></p>
+                <p class="text-lg text-gray-600 mb-8">${mensagem}</p>
+                <button onclick="renderHomePage()" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-transform duration-300 transform hover:scale-105">
+                    Voltar para o início
+                </button>
+            `;
+        }
+
+        // Inicia a aplicação na página inicial
+        renderHomePage();
+    </script>
+</body>
+</html>
